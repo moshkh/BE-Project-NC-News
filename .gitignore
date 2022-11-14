@@ -1,3 +1,6 @@
 node_modules
 .env.*
-notes.txt
+notes.md
+test-seed.js
+querytester.sql 
+queryoutput.txt

@@ -29,6 +29,31 @@ describe("/api/topics", () => {
   });
 });
 
+describe("/api/articles", () => {
+  test("GET - 200: Responds with an array of article objects, each object includes username and comment_count - articles are in date descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBeGreaterThan(0);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(Number),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        })
+      });
+  });
+});
+
 describe("General Errors", () => {
   test("GET - 404: Nonexistent API path returns error message 'invalid url'", () => {
     return request(app)
