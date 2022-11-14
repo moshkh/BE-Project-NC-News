@@ -42,14 +42,14 @@ describe("/api/articles", () => {
             title: expect.any(String),
             article_id: expect.any(Number),
             topic: expect.any(String),
-            created_at: expect.any(Number),
+            created_at: expect.any(String),
             votes: expect.any(Number),
-            comment_count: expect.any(Number),
+            comment_count: expect.any(String),
           });
         });
         expect(articles).toBeSortedBy("created_at", {
           descending: true,
-        })
+        });
       });
   });
 });
