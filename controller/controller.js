@@ -1,4 +1,8 @@
-const { selectTopics, selectArticles } = require("../model/model");
+const {
+  selectTopics,
+  selectArticles,
+  selectArticleById,
+} = require("../model/model");
 
 exports.getTopics = (req, res, next) => {
   selectTopics()
@@ -12,6 +16,16 @@ exports.getArticles = (req, res, next) => {
   selectArticles()
     .then((articles) => {
       res.status(200).send({ articles });
+    })
+    .catch(next);
+};
+
+exports.getArticleById = (req, res, next) => {
+  //deconstructing for access to article_id
+  const { article_id } = req.params;
+  selectArticleById(article_id)
+    .then((article) => {
+      res.status(200).send({ article });
     })
     .catch(next);
 };
