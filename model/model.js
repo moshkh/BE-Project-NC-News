@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { checkIfValidId } = require("../utils/general.util");
 
 exports.selectTopics = () => {
   return db
@@ -26,5 +27,24 @@ exports.selectArticles = () => {
     )
     .then(({ rows }) => {
       return rows;
+    });
+};
+
+exports.selectArticleById = (article_id) => {
+  return checkIfValidId(article_id)
+    .then(() => {
+      return db.query(
+        `
+    SELECT * FROM articles
+    WHERE article_id = $1;
+    `,
+        [article_id]
+      );
+    })
+    .then(({ rows }) => {
+      if (!rows.length) {
+        return Promise.reject({ status: 404, msg: "not found" });
+      }
+      return rows[0];
     });
 };

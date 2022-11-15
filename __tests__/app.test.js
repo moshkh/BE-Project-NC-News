@@ -54,6 +54,33 @@ describe("/api/articles", () => {
   });
 });
 
+describe("/api/articles/:article_id", () => {
+  test("GET: 200 - Responds with single article with the correct article_id", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.article_id).toBe(2);
+      });
+  });
+  test("GET: 404 - If article doesn't exist responds with a msg: 'not found'", () => {
+    return request(app)
+      .get("/api/articles/100")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found");
+      });
+  });
+  test("GET 400 - If article_id is not a number respond with msg: 'invalid id'", () => {
+    return request(app)
+      .get("/api/articles/one")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid id");
+      });
+  });
+});
+
 describe("General Errors", () => {
   test("GET - 404: Nonexistent API path returns error message 'invalid url'", () => {
     return request(app)
