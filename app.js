@@ -27,6 +27,16 @@ app.use((err, req, res, next) => {
   }
 });
 
+//psql errors
+app.use((err, req, res, next) => {
+  if (err.code === "22P02") {
+    //send custom error to next
+    res.status(400).send({ msg: "invalid id" });
+  } else {
+    next(err);
+  }
+});
+
 //catch all
 app.use((err, req, res, next) => {
   console.log(err, "caught in the catch all!!!");
