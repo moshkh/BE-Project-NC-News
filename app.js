@@ -29,7 +29,7 @@ app.use((err, req, res, next) => {
 
 //catch all
 app.use((err, req, res, next) => {
-  //console.log(err, "Server Error!!!");
+  console.log(err, "caught in the catch all!!!");
   res.status(500).send({ msg: "server error!" });
 });
 

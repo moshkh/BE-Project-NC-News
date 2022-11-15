@@ -1,3 +1,4 @@
+const { response } = require("../app");
 const db = require("../db/connection");
 const { checkIfValidId } = require("../utils/general.util");
 
@@ -31,16 +32,14 @@ exports.selectArticles = () => {
 };
 
 exports.selectArticleById = (article_id) => {
-  return checkIfValidId(article_id)
-    .then(() => {
-      return db.query(
-        `
+  return db
+    .query(
+      `
     SELECT * FROM articles
     WHERE article_id = $1;
     `,
-        [article_id]
-      );
-    })
+      [article_id]
+    )
     .then(({ rows }) => {
       if (!rows.length) {
         return Promise.reject({ status: 404, msg: "not found" });
