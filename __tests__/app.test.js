@@ -63,6 +63,22 @@ describe("/api/articles/:article_id", () => {
         expect(article.article_id).toBe(2);
       });
   });
+  test("GET: 200 - The response article to have the correct structure / properties", () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.article_id).toBe(3);
+        expect(article).toMatchObject({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+        });
+      });
+  });
   test("GET: 404 - If article doesn't exist responds with a msg: 'not found'", () => {
     return request(app)
       .get("/api/articles/100")
