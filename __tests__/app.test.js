@@ -98,16 +98,17 @@ describe("/api/articles/:article_id", () => {
 });
 
 describe("/api/articles/:article_id/comments", () => {
-  test("GET: 200 - responds with comments for for a given article_id, comments response to be in the correct structure", () => {
+  test("GET: 200 - responds with comments for a given article_id, comments response to be in the correct structure", () => {
     return request(app)
       .get("/api/articles/5/comments")
       .expect(200)
-      .then((comments) => {
+      .then(({ body: { comments } }) => {
+        console.log(comments);
         expect(Array.isArray(comments)).toBe(true);
         expect(comments.length).toBe(2);
         comments.forEach((comment) => {
           expect(comment).toMatchObject({
-            comment_id: expect.any(String),
+            comment_id: expect.any(Number),
             votes: expect.any(Number),
             created_at: expect.any(String),
             author: expect.any(String),
@@ -117,6 +118,16 @@ describe("/api/articles/:article_id/comments", () => {
             descending: true,
           });
         });
+      });
+  });
+  test("GET: 200 - Responds with an empty comment array when given an article_id which has no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        console.log(comments);
+        expect(Array.isArray(comments)).toBe(true);
+        expect(comments.length).toBe(0);
       });
   });
   test("GET: 404 - If article doesn't exist responds with a msg: 'not found'", () => {
