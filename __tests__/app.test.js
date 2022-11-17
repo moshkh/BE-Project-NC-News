@@ -146,7 +146,7 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("invalid id");
       });
   });
-  test("POST: 201 - Object in the post is successfully added to the db and a response is made back container the posted comment", () => {
+  test.skip("POST: 201 - Object in the post is successfully added to the db and a response is made back container the posted comment", () => {
     const newComment = { username: "butter_bridge", body: "test comment" };
     return request(app)
       .post("/api/articles/2/comments")
@@ -163,7 +163,7 @@ describe("/api/articles/:article_id/comments", () => {
         });
       });
   });
-  test("POST: 201 - If post has any other properties apart from username or body responds, ignore extra properties and proceed with post", () => {
+  test.skip("POST: 201 - If post has any other properties apart from username or body responds, ignore extra properties and proceed with post", () => {
     const newComment = {
       username: "butter_bridge",
       body: "test comment",
