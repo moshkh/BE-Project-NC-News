@@ -4,13 +4,17 @@ const {
   getArticles,
   getArticleById,
   getArticleComments,
+  postCommentToArticle,
 } = require("./controller/controller");
 const app = express();
+app.use(express.json());
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getArticleComments);
+
+app.post("/api/articles/:article_id/comments", postCommentToArticle);
 
 //errors
 
@@ -34,9 +38,16 @@ app.use((err, req, res, next) => {
 //psql errors
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
-    //send custom error to next
     console.log(err, "Logging from app as PSQL 22P02 err!");
     res.status(400).send({ msg: "invalid id" });
+  }
+  if (err.code === "23503") {
+    console.log(err, "Logging from app as PSQL 23503 err!");
+    res.status(404).send({ msg: "not found" });
+  }
+  if (err.code === "23502") {
+    console.log(err, "Logging from app as PSQL 23502 err!");
+    res.status(400).send({ msg: "property missing or invalid" });
   } else {
     next(err);
   }
