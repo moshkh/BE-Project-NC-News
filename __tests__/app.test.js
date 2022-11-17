@@ -158,12 +158,33 @@ describe("/api/articles/:article_id/comments", () => {
           body: expect.any(String),
           article_id: expect.any(Number),
           author: expect.any(String),
+          votes: expect.any(2),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("POST: 201 - If post has any other properties apart from username or body responds, ignore extra properties and proceed with post", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "test comment",
+      article: 1,
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: expect.any(String),
+          article_id: expect.any(2),
+          author: expect.any(String),
           votes: expect.any(Number),
           created_at: expect.any(String),
         });
       });
   });
-  test("1. POST: 400 - If post body is incorrectly formatted e.g. no username or body contents responds with msg: 'bad request'", () => {
+  test("POST: 400 - If post body is incorrectly formatted e.g. no username or body contents responds with msg: 'bad request'", () => {
     const newComment = { username: "", body: "" };
     return request(app)
       .post("/api/articles/2/comments")
@@ -173,58 +194,38 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("bad request");
       });
   });
-  test.skip("2. POST: 400 - If post body does not have a username responds with msg 'non-existent username or missing username / comment body'", () => {
+  test("POST: 400 - If post body does not have a username responds with msg 'property missing or invalid'", () => {
     const newComment = { body: "test" };
     return request(app)
       .post("/api/articles/2/comments")
       .send(newComment)
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe(
-          "non-existent username or missing username / comment body"
-        );
+        expect(body.msg).toBe("property missing or invalid");
       });
   });
-  test.skip("3. POST: 400 - If post body does not have a body responds with msg 'non-existent username or missing username / comment body'", () => {
+  test("POST: 400 - If post body does not have a body responds with msg 'propery missing or invalid'", () => {
     const newComment = { username: "butter_bridge" };
     return request(app)
       .post("/api/articles/2/comments")
       .send(newComment)
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe(
-          "non-existent username or missing username / comment body"
-        );
+        expect(body.msg).toBe("property missing or invalid");
         ``;
       });
   });
-  test.skip("4. POST: 400 - If username does not exist responds with msg : 'non-existent username or missing username / comment body'", () => {
+  test("POST: 400 - If username does not exist responds with msg : 'property missing or invalid'", () => {
     const newComment = { body: "test" };
     return request(app)
       .post("/api/articles/2/comments")
       .send(newComment)
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe(
-          "non-existent username or missing username / comment body"
-        );
+        expect(body.msg).toBe("property missing or invalid");
       });
   });
-  test.skip("5. POST: 400 - If post has any other properties apart from username or body responds with incorrect format", () => {
-    const newComment = {
-      username: "butter_bridge",
-      body: "test comment",
-      article: 1,
-    };
-    return request(app)
-      .post("/api/articles/2/comments")
-      .send(newComment)
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("bad request");
-      });
-  });
-  test("6. POST: 404 - If article_id does not exist respond with msg: 'not found'", () => {
+  test("POST: 404 - If article_id does not exist respond with msg: 'not found'", () => {
     const newComment = { username: "butter_bridge", body: "test comment" };
     return request(app)
       .post("/api/articles/100/comments")
@@ -234,10 +235,10 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("not found");
       });
   });
-  test.skip("7. POST: 400 - If article_id is not a number respond with msg: 'invalid id'", () => {
+  test.only("POST: 400 - If article_id is not a number respond with msg: 'invalid id'", () => {
     const newComment = { username: "butter_bridge", body: "test comment" };
     return request(app)
-      .post("/api/articles/100/comments")
+      .post("/api/articles/one/comments")
       .send(newComment)
       .expect(400)
       .then(({ body }) => {

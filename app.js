@@ -38,7 +38,6 @@ app.use((err, req, res, next) => {
 //psql errors
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
-    //send custom error to next
     console.log(err, "Logging from app as PSQL 22P02 err!");
     res.status(400).send({ msg: "invalid id" });
   }
@@ -48,7 +47,7 @@ app.use((err, req, res, next) => {
   }
   if (err.code === "23502") {
     console.log(err, "Logging from app as PSQL 23502 err!");
-    res.status(400).send({ msg: "non-existent username or missing username / comment body" });
+    res.status(400).send({ msg: "property missing or invalid" });
   } else {
     next(err);
   }

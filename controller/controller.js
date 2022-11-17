@@ -42,10 +42,6 @@ exports.getArticleComments = (req, res, next) => {
 };
 
 exports.postCommentToArticle = (req, res, next) => {
-  // if (Object.keys(req.body).length > 2) {
-  //   return Promise.reject({ status: 400, msg: "bad request" });
-  // } else {
-  //if()
   const { username, body } = req.body;
   const { article_id } = req.params;
   insertCommentToArticle(article_id, username, body)
@@ -53,7 +49,4 @@ exports.postCommentToArticle = (req, res, next) => {
       res.status(201).send({ comment });
     })
     .catch(next);
-  // }
-  //invoke model which will post comment to db
-  //then block to get the response, send back response
 };

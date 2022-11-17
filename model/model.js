@@ -66,23 +66,9 @@ exports.selectCommentsByArticleId = (article_id) => {
 };
 
 exports.insertCommentToArticle = (article_id, username, body) => {
-  // console.log(article_id);
-  // console.log(username);
-  // console.log(body);
-  //db query to add comment with *returning
   if (username === "" || body === "") {
     return Promise.reject({ status: 400, msg: "bad request" });
   }
-  // if (username === "undefined" || body === "undefined") {
-  //   return Promise.reject({ status: 400, msg: "missing username or comment body" });
-  // }
-  // if (body === "undefined") {
-  //   return Promise.reject({
-  //     status: 400,
-  //     msg: "missing username or comment body",
-  //   });
-  // }
-  // if()
   return db
     .query(
       `
@@ -93,7 +79,7 @@ exports.insertCommentToArticle = (article_id, username, body) => {
       RETURNING *;
       `,
       [article_id, username, body]
-    ) //.then to send response to controller
+    )
     .then(({ rows }) => {
       return rows[0];
     });
