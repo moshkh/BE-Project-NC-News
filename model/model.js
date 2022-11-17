@@ -70,9 +70,19 @@ exports.insertCommentToArticle = (article_id, username, body) => {
   // console.log(username);
   // console.log(body);
   //db query to add comment with *returning
-  if (!username || !body) {
+  if (username === "" || body === "") {
     return Promise.reject({ status: 400, msg: "bad request" });
   }
+  // if (username === "undefined" || body === "undefined") {
+  //   return Promise.reject({ status: 400, msg: "missing username or comment body" });
+  // }
+  // if (body === "undefined") {
+  //   return Promise.reject({
+  //     status: 400,
+  //     msg: "missing username or comment body",
+  //   });
+  // }
+  // if()
   return db
     .query(
       `

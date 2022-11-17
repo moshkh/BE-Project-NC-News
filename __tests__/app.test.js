@@ -163,7 +163,7 @@ describe("/api/articles/:article_id/comments", () => {
         });
       });
   });
-  test("POST: 400 - If post body is incorrectly formatted e.g. no username or body contents responds with msg: 'bad request'", () => {
+  test("1. POST: 400 - If post body is incorrectly formatted e.g. no username or body contents responds with msg: 'bad request'", () => {
     const newComment = { username: "", body: "" };
     return request(app)
       .post("/api/articles/2/comments")
@@ -173,7 +173,58 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("bad request");
       });
   });
-  test("POST: 404 - If article_id does not exist or is not a number respond with msg: 'not found'", () => {
+  test.skip("2. POST: 400 - If post body does not have a username responds with msg 'non-existent username or missing username / comment body'", () => {
+    const newComment = { body: "test" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe(
+          "non-existent username or missing username / comment body"
+        );
+      });
+  });
+  test.skip("3. POST: 400 - If post body does not have a body responds with msg 'non-existent username or missing username / comment body'", () => {
+    const newComment = { username: "butter_bridge" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe(
+          "non-existent username or missing username / comment body"
+        );
+        ``;
+      });
+  });
+  test.skip("4. POST: 400 - If username does not exist responds with msg : 'non-existent username or missing username / comment body'", () => {
+    const newComment = { body: "test" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe(
+          "non-existent username or missing username / comment body"
+        );
+      });
+  });
+  test.skip("5. POST: 400 - If post has any other properties apart from username or body responds with incorrect format", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "test comment",
+      article: 1,
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("6. POST: 404 - If article_id does not exist respond with msg: 'not found'", () => {
     const newComment = { username: "butter_bridge", body: "test comment" };
     return request(app)
       .post("/api/articles/100/comments")
@@ -181,6 +232,16 @@ describe("/api/articles/:article_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("not found");
+      });
+  });
+  test.skip("7. POST: 400 - If article_id is not a number respond with msg: 'invalid id'", () => {
+    const newComment = { username: "butter_bridge", body: "test comment" };
+    return request(app)
+      .post("/api/articles/100/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid id");
       });
   });
 });
