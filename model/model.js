@@ -1,6 +1,10 @@
 const db = require("../db/connection");
-const { checkArticleExists } = require("../utils/db.util");
+const {
+  checkArticleExists,
+  currentVotesForArticle,
+} = require("../utils/db.util");
 const format = require("pg-format");
+const { response } = require("../app");
 
 exports.selectTopics = () => {
   return db
@@ -83,4 +87,38 @@ exports.insertCommentToArticle = (article_id, username, body) => {
     .then(({ rows }) => {
       return rows[0];
     });
+};
+
+exports.insertVoteForArticle = (article_id, inc_votes) => {
+  return currentVotesForArticle(article_id).then(({ rows: [{ votes }] }) => {
+    //console.log(votes);
+    inc_votes += votes;
+    return db
+      .query(
+        `
+        UPDATE articles
+        SET votes = $1
+        WHERE article_id = $2
+        RETURNING *;
+      `,
+        [inc_votes, article_id]
+      )
+      .then(({ rows }) => {
+        return rows[0];
+      });
+  });
+
+  // return db
+  //   .query(
+  //     `
+  //       UPDATE articles
+  //       SET votes = votes + $1
+  //       WHERE article_id = $2
+  //       RETURNING *;
+  //     `,
+  //     [inc_votes, article_id]
+  //   )
+  //   .then(({rows}) => {
+  //     return rows[0]
+  //   });
 };

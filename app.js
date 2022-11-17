@@ -5,6 +5,7 @@ const {
   getArticleById,
   getArticleComments,
   postCommentToArticle,
+  patchVoteToArticle,
 } = require("./controller/controller");
 const app = express();
 app.use(express.json());
@@ -15,6 +16,8 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.post("/api/articles/:article_id/comments", postCommentToArticle);
+
+app.patch("/api/articles/:article_id", patchVoteToArticle);
 
 //errors
 

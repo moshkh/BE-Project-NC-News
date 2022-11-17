@@ -35,3 +35,13 @@ exports.commentFormatForInsert = (article_id, username, body) => {
 
   return itemsInsertStr;
 };
+
+exports.currentVotesForArticle = (article_id) => {
+  return db.query(
+    `
+    SELECT votes FROM articles
+    WHERE article_id = $1
+    `,
+    [article_id]
+  );
+};
