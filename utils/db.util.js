@@ -12,7 +12,6 @@ exports.checkArticleExists = (article_id) => {
       [article_id]
     )
     .then(({ rows }) => {
-      console.log(rows, "logging from util");
       if (!rows.length) {
         return Promise.reject({ status: 404, msg: "not found" });
       }

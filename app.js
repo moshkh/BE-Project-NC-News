@@ -42,7 +42,7 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
     console.log(err, "Logging from app as PSQL 22P02 err!");
-    res.status(400).send({ msg: "invalid id" });
+    res.status(400).send({ msg: "invalid id / input" });
   }
   if (err.code === "23503") {
     console.log(err, "Logging from app as PSQL 23503 err!");
