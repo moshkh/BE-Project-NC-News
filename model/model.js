@@ -1,5 +1,6 @@
 const { response } = require("../app");
 const db = require("../db/connection");
+const { checkArticleExists } = require("../utils/db.util");
 const { checkIfValidId } = require("../utils/general.util");
 
 exports.selectTopics = () => {
@@ -45,5 +46,22 @@ exports.selectArticleById = (article_id) => {
         return Promise.reject({ status: 404, msg: "not found" });
       }
       return rows[0];
+    });
+};
+
+exports.selectCommentsByArticleId = (article_id) => {
+  return checkArticleExists(article_id)
+    .then(() => {
+      return db.query(
+        `
+      SELECT comment_id, votes, created_at, author, body FROM comments
+      WHERE article_id = $1
+      ORDER BY created_at DESC;
+      `,
+        [article_id]
+      );
+    })
+    .then(({ rows }) => {
+      return rows;
     });
 };
