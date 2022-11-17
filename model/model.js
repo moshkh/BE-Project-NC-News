@@ -1,7 +1,6 @@
-const { response } = require("../app");
 const db = require("../db/connection");
 const { checkArticleExists } = require("../utils/db.util");
-const { checkIfValidId } = require("../utils/general.util");
+const format = require("pg-format");
 
 exports.selectTopics = () => {
   return db
@@ -63,5 +62,29 @@ exports.selectCommentsByArticleId = (article_id) => {
     })
     .then(({ rows }) => {
       return rows;
+    });
+};
+
+exports.insertCommentToArticle = (article_id, username, body) => {
+  // console.log(article_id);
+  // console.log(username);
+  // console.log(body);
+  //db query to add comment with *returning
+  if (!username || !body) {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
+  return db
+    .query(
+      `
+      INSERT INTO comments
+      (article_id, author, body)
+      VALUES
+      ($1, $2, $3)
+      RETURNING *;
+      `,
+      [article_id, username, body]
+    ) //.then to send response to controller
+    .then(({ rows }) => {
+      return rows[0];
     });
 };

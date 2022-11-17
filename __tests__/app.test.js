@@ -13,7 +13,7 @@ afterAll(() => {
 });
 
 describe("/api/topics", () => {
-  test("GET - 200: Responds with an array of topic objects with slug and description properties", () => {
+  test("GET: 200 - Responds with an array of topic objects with slug and description properties", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -87,7 +87,7 @@ describe("/api/articles/:article_id", () => {
         expect(body.msg).toBe("not found");
       });
   });
-  test("GET 400 - If article_id is not a number respond with msg: 'invalid id'", () => {
+  test("GET: 400 - If article_id is not a number respond with msg: 'invalid id'", () => {
     return request(app)
       .get("/api/articles/one")
       .expect(400)
@@ -138,7 +138,7 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("not found");
       });
   });
-  test("GET 400 - If article_id is not a number respond with msg: 'invalid id'", () => {
+  test("GET: 400 - If article_id is not a number respond with msg: 'invalid id'", () => {
     return request(app)
       .get("/api/articles/one/comments")
       .expect(400)
@@ -146,10 +146,47 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("invalid id");
       });
   });
+  test("POST: 201 - Object in the post is successfully added to the db and a response is made back container the posted comment", () => {
+    const newComment = { username: "butter_bridge", body: "test comment" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: expect.any(String),
+          article_id: expect.any(Number),
+          author: expect.any(String),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("POST: 400 - If post body is incorrectly formatted e.g. no username or body contents responds with msg: 'bad request'", () => {
+    const newComment = { username: "", body: "" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("POST: 404 - If article_id does not exist or is not a number respond with msg: 'not found'", () => {
+    const newComment = { username: "butter_bridge", body: "test comment" };
+    return request(app)
+      .post("/api/articles/100/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found");
+      });
+  });
 });
 
 describe("General Errors", () => {
-  test("GET - 404: Nonexistent API path returns error message 'invalid url'", () => {
+  test("GET: 404 - Nonexistent API path returns error message 'invalid url'", () => {
     return request(app)
       .get("/api/topcs")
       .expect(404)

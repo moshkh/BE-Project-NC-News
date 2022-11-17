@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const format = require("pg-format");
 
 exports.checkArticleExists = (article_id) => {
   return db
@@ -16,4 +17,21 @@ exports.checkArticleExists = (article_id) => {
         return Promise.reject({ status: 404, msg: "not found" });
       }
     });
+};
+
+exports.commentFormatForInsert = (article_id, username, body) => {
+  const nestedArrOfValues = [[article_id, username, body]];
+
+  const itemsInsertStr = format(
+    `
+  INSERT INTO comments 
+  (article_id, author, body) 
+  VALUES 
+  %L
+  RETURNING *;
+  `,
+    nestedArrOfValues
+  );
+
+  return itemsInsertStr;
 };
