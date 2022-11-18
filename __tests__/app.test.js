@@ -87,12 +87,73 @@ describe("/api/articles/:article_id", () => {
         expect(body.msg).toBe("not found");
       });
   });
-  test("GET: 400 - If article_id is not a number respond with msg: 'invalid id'", () => {
+  test("GET: 400 - If article_id is not a number respond with msg: 'invalid id / input'", () => {
     return request(app)
       .get("/api/articles/one")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("invalid id");
+        expect(body.msg).toBe("invalid id / input");
+      });
+  });
+  test("PATCH: 200 - Increase votes for article successfully and respond with the updated article", () => {
+    const newVote = { inc_votes: 10 };
+    return request(app)
+      .patch("/api/articles/3")
+      .send(newVote)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.article_id).toBe(3);
+        expect(article.votes).toBe(10);
+      });
+  });
+  test("PATCH: 200 - Decrease votes for article successfully and respond with the updated article", () => {
+    const newVote = { inc_votes: -20 };
+    return request(app)
+      .patch("/api/articles/5")
+      .send(newVote)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.article_id).toBe(5);
+        expect(article.votes).toBe(-20);
+      });
+  });
+  test("PATCH: 200 - If more properties than inc_votes are on body still update the vote count and respond with updated article", () => {
+    const newVote = { inc_votes: -2, article_id: 7 };
+    return request(app)
+      .patch("/api/articles/7")
+      .send(newVote)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.article_id).toBe(7);
+        expect(article.votes).toBe(-2);
+      });
+  });
+  test("PATCH: 400 - If post body is incorrectly formatted respond with msg: 'invalid id / input'", () => {
+    const newVote = { inc_votes: "one" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(newVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid id / input");
+      });
+  });
+  test("PATCH: 404 - If article_id does not exist respond with msg: 'not found'", () => {
+    return request(app)
+      .patch("/api/articles/100")
+      .send({ inc_votes: 5 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found");
+      });
+  });
+  test("PATCH: 400 - If article_id is not a number respond with msg: 'invalid id / input'", () => {
+    return request(app)
+      .patch("/api/articles/fifty")
+      .send({ inc_votes: 150 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid id / input");
       });
   });
 });
@@ -138,12 +199,12 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("not found");
       });
   });
-  test("GET: 400 - If article_id is not a number respond with msg: 'invalid id'", () => {
+  test("GET: 400 - If article_id is not a number respond with msg: 'invalid id / input'", () => {
     return request(app)
       .get("/api/articles/one/comments")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("invalid id");
+        expect(body.msg).toBe("invalid id / input");
       });
   });
   test("POST: 201 - Object in the post is successfully added to the db and a response is made back container the posted comment", () => {
@@ -156,9 +217,9 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.comment).toMatchObject({
           comment_id: expect.any(Number),
           body: expect.any(String),
-          article_id: expect.any(Number),
+          article_id: 2,
           author: expect.any(String),
-          votes: expect.any(2),
+          votes: expect.any(Number),
           created_at: expect.any(String),
         });
       });
@@ -177,7 +238,7 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.comment).toMatchObject({
           comment_id: expect.any(Number),
           body: expect.any(String),
-          article_id: expect.any(2),
+          article_id: 2,
           author: expect.any(String),
           votes: expect.any(Number),
           created_at: expect.any(String),
@@ -235,14 +296,14 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("not found");
       });
   });
-  test.only("POST: 400 - If article_id is not a number respond with msg: 'invalid id'", () => {
+  test("POST: 400 - If article_id is not a number respond with msg: 'invalid id / input'", () => {
     const newComment = { username: "butter_bridge", body: "test comment" };
     return request(app)
       .post("/api/articles/one/comments")
       .send(newComment)
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("invalid id");
+        expect(body.msg).toBe("invalid id / input");
       });
   });
 });

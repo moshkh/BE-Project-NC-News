@@ -12,7 +12,6 @@ exports.checkArticleExists = (article_id) => {
       [article_id]
     )
     .then(({ rows }) => {
-      console.log(rows, "logging from util");
       if (!rows.length) {
         return Promise.reject({ status: 404, msg: "not found" });
       }
@@ -34,4 +33,14 @@ exports.commentFormatForInsert = (article_id, username, body) => {
   );
 
   return itemsInsertStr;
+};
+
+exports.currentVotesForArticle = (article_id) => {
+  return db.query(
+    `
+    SELECT votes FROM articles
+    WHERE article_id = $1
+    `,
+    [article_id]
+  );
 };

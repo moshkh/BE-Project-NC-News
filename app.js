@@ -5,6 +5,7 @@ const {
   getArticleById,
   getArticleComments,
   postCommentToArticle,
+  patchVoteToArticle,
 } = require("./controller/controller");
 const app = express();
 app.use(express.json());
@@ -15,6 +16,8 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.post("/api/articles/:article_id/comments", postCommentToArticle);
+
+app.patch("/api/articles/:article_id", patchVoteToArticle);
 
 //errors
 
@@ -39,7 +42,7 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
     console.log(err, "Logging from app as PSQL 22P02 err!");
-    res.status(400).send({ msg: "invalid id" });
+    res.status(400).send({ msg: "invalid id / input" });
   }
   if (err.code === "23503") {
     console.log(err, "Logging from app as PSQL 23503 err!");

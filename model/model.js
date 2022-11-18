@@ -1,6 +1,8 @@
 const db = require("../db/connection");
-const { checkArticleExists } = require("../utils/db.util");
-const format = require("pg-format");
+const {
+  checkArticleExists,
+  currentVotesForArticle,
+} = require("../utils/db.util");
 
 exports.selectTopics = () => {
   return db
@@ -80,6 +82,24 @@ exports.insertCommentToArticle = (article_id, username, body) => {
       `,
       [article_id, username, body]
     )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
+
+exports.insertVoteForArticle = (article_id, inc_votes) => {
+  return checkArticleExists(article_id)
+    .then(() => {
+      return db.query(
+        `
+        UPDATE articles
+        SET votes = votes + $1
+        WHERE article_id = $2
+        RETURNING *;
+      `,
+        [inc_votes, article_id]
+      );
+    })
     .then(({ rows }) => {
       return rows[0];
     });
