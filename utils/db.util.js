@@ -44,3 +44,21 @@ exports.currentVotesForArticle = (article_id) => {
     [article_id]
   );
 };
+
+exports.topicQuery = (topic) => {
+  if (topic) {
+    let queryValues = [topic];
+    
+
+    queryStr += `WHERE topic = $1`;
+
+    queryStr += ` GROUP BY articles.article_id ORDER BY created_at DESC;`;
+
+  } else {
+    let query = (`
+    
+    GROUP BY articles.article_id
+    ORDER BY created_at DESC;
+    `);
+  }
+};

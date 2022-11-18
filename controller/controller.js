@@ -17,8 +17,10 @@ exports.getTopics = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  selectArticles()
+  const { topic } = req.query;
+  selectArticles(topic)
     .then((articles) => {
+      console.log(articles);
       res.status(200).send({ articles });
     })
     .catch(next);

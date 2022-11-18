@@ -52,6 +52,70 @@ describe("/api/articles", () => {
         });
       });
   });
+  describe("/api/articles/(queries)", () => {
+    describe("?topic", () => {
+      test("GET: 200 - querying an existing topic responds with articles on that topic", () => {
+        return request(app)
+          .get("/api/articles/?topic=mitch")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles.length).toBeGreaterThanOrEqual(1);
+            articles.forEach((article) => {
+              expect(article).toMatchObject({
+                topic: "mitch",
+              });
+            });
+          });
+      });
+      test.todo(
+        "GET: 200 - when no topic query provided responds with all articles"
+      );
+      test.todo(
+        "GET: 404 - querying a non-existing topic responds with msg 'not found'"
+      );
+    });
+    describe("?sort_by", () => {
+      test.todo(
+        "GET 200: - (Default) responds with articles sorted by created_at in descending order if no sort_by query given"
+      );
+      test.todo(
+        "GET: 200 - responds with articles sorted by article_id in descending order, when specified in query"
+      );
+      test.todo(
+        "GET: 200 - responds with articles sorted by title in descending order, when specified in query"
+      );
+      test.todo(
+        "GET: 200 - responds with articles sorted by topic in descending order, when specified in query"
+      );
+      test.todo(
+        "GET: 200 - responds with articles sorted by author in descending order, when specified in query"
+      );
+      test.todo(
+        "GET: 200 - responds with articles sorted bycreated_at in descending order, when specified in query"
+      );
+      test.todo(
+        "GET: 200 - responds with articles sorted by votes in descending order, when specified in query"
+      );
+      //did not do a test for sort_by body as thought that won't be necessary
+      test.todo(
+        "GET: 400 - if invalid sort_by query responds with msg: 'bad request'"
+      );
+    });
+    describe("?order", () => {
+      test.todo(
+        "GET - 200: (Default) responds with articles in descending order if no order query provided"
+      );
+      test.todo(
+        "GET - 200: responds with articles order in ascending when given ASC"
+      );
+      test.todo(
+        "GET - 200: responds with articles order in descending when given DESC"
+      );
+      test.todo(
+        "GET - 400: if invalid order query responds with msg 'bad request'"
+      );
+    });
+  });
 });
 
 describe("/api/articles/:article_id", () => {
