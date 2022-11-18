@@ -3,6 +3,7 @@ const {
   checkArticleExists,
   currentVotesForArticle,
   topicQuery,
+  checkTopicExists,
 } = require("../utils/db.util");
 
 exports.selectTopics = () => {
@@ -17,25 +18,43 @@ exports.selectTopics = () => {
     });
 };
 
-exports.selectArticles = (topic) => {
-  let queryValues = [];
-  let queryStr = `
-      SELECT articles.*, COUNT(comment_id) AS comment_count
-      FROM articles
-      LEFT JOIN comments
-      ON articles.article_id = comments.article_id
-      `;
+exports.selectArticles = (topic, sort_by = "created_at", order = "DESC") => {
+  const validSorts = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  const validOrders = ["ASC", "DESC"];
+  if (!validSorts.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  } else if (!validOrders.includes(order)) {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  } else {
+    return checkTopicExists(topic).then(() => {
+      let queryValues = [];
+      let queryStr = `
+        SELECT articles.*, COUNT(comment_id) AS comment_count
+        FROM articles
+        LEFT JOIN comments
+        ON articles.article_id = comments.article_id
+        `;
 
-  if (topic) {
-    queryValues.push(topic);
-    queryStr += `WHERE topic = $1`;
+      if (topic) {
+        queryValues.push(topic);
+        queryStr += `WHERE topic = $1`;
+      }
+
+      queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
+
+      return db.query(queryStr, queryValues).then(({ rows }) => {
+        return rows;
+      });
+    });
   }
-
-  queryStr += ` GROUP BY articles.article_id ORDER BY created_at DESC;`;
-
-  return db.query(queryStr, queryValues).then(({ rows }) => {
-    return rows;
-  });
 };
 
 exports.selectArticleById = (article_id) => {

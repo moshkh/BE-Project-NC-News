@@ -45,20 +45,21 @@ exports.currentVotesForArticle = (article_id) => {
   );
 };
 
-exports.topicQuery = (topic) => {
+exports.checkTopicExists = (topic) => {
   if (topic) {
-    let queryValues = [topic];
-    
-
-    queryStr += `WHERE topic = $1`;
-
-    queryStr += ` GROUP BY articles.article_id ORDER BY created_at DESC;`;
-
+    return db
+      .query(
+        `SELECT * FROM articles
+      WHERE topic = $1`,
+        [topic]
+      )
+      .then(({ rows }) => {
+        console.log(rows);
+        if (rows.length === 0) {
+          return Promise.reject({ status: 404, msg: "not found" });
+        }
+      });
   } else {
-    let query = (`
-    
-    GROUP BY articles.article_id
-    ORDER BY created_at DESC;
-    `);
+    return Promise.resolve();
   }
 };

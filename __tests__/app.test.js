@@ -80,55 +80,142 @@ describe("/api/articles", () => {
             });
           });
       });
-      test.skip("GET: 404 - querying a non-existing topic responds with msg 'not found'", () => {
+      test("GET: 404 - querying a non-existing topic responds with msg 'not found'", () => {
         return request(app)
           .get("/api/articles/?topic=doesnotexist")
-          .expect(200)
+          .expect(404)
           .then(({ body }) => {
             expect(body.msg).toBe("not found");
           });
       });
     });
     describe("?sort_by", () => {
-      test.todo(
-        "GET 200: - (Default) responds with articles sorted by created_at in descending order if no sort_by query given"
-      );
-      test.todo(
-        "GET: 200 - responds with articles sorted by article_id in descending order, when specified in query"
-      );
-      test.todo(
-        "GET: 200 - responds with articles sorted by title in descending order, when specified in query"
-      );
-      test.todo(
-        "GET: 200 - responds with articles sorted by topic in descending order, when specified in query"
-      );
-      test.todo(
-        "GET: 200 - responds with articles sorted by author in descending order, when specified in query"
-      );
-      test.todo(
-        "GET: 200 - responds with articles sorted bycreated_at in descending order, when specified in query"
-      );
-      test.todo(
-        "GET: 200 - responds with articles sorted by votes in descending order, when specified in query"
-      );
-      //did not do a test for sort_by body as thought that won't be necessary
-      test.todo(
-        "GET: 400 - if invalid sort_by query responds with msg: 'bad request'"
-      );
+      test("GET 200: - (Default) responds with articles sorted by created_at in descending order if no sort_by query given", () => {
+        return request(app)
+          .get("/api/articles/")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("created_at", { descending: true });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET: 200 - responds with articles sorted by article_id in descending order, when specified in query", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=article_id")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("article_id", { descending: true });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET: 200 - responds with articles sorted by title in descending order, when specified in query", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=title")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("title", { descending: true });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET: 200 - responds with articles sorted by topic in descending order, when specified in query", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=topic")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("topic", { descending: true });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET: 200 - responds with articles sorted by author in descending order, when specified in query", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=author")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("author", { descending: true });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET: 200 - responds with articles sorted by created_at in descending order, when specified in query", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=created_at")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("created_at", { descending: true });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET: 200 - responds with articles sorted by votes in descending order, when specified in query", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=votes")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("votes", { descending: true });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET: 400 - if invalid sort_by query responds with msg: 'bad request'", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=FFFF")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("bad request");
+          });
+      });
     });
     describe("?order", () => {
-      test.todo(
-        "GET - 200: (Default) responds with articles in descending order if no order query provided"
-      );
-      test.todo(
-        "GET - 200: responds with articles order in ascending when given ASC"
-      );
-      test.todo(
-        "GET - 200: responds with articles order in descending when given DESC"
-      );
-      test.todo(
-        "GET - 400: if invalid order query responds with msg 'bad request'"
-      );
+      test("GET - 200: (Default) responds with articles in descending order if no order query provided", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=article_id")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("article_id", { descending: true });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET - 200: responds with articles order in ascending when order query is given ASC", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=topic&order=ASC")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("topic", { descending: false });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET - 200: responds with articles order in descending when given DESC", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=votes&order=DESC")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("votes", { descending: true });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET - 200: when given an ASC order query without a sort_by query it responds with articles in created_at ascending order", () => {
+        return request(app)
+          .get("/api/articles/?order=ASC")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("created_at", { descending: false });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET - 200: when given an DESC order query without a sort_by query it responds with articles in created_at descending order", () => {
+        return request(app)
+          .get("/api/articles/?order=DESC")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("created_at", { descending: true });
+            expect(articles.length).toBe(testData.articleData.length);
+          });
+      });
+      test("GET - 400: if invalid order query responds with msg 'bad request'", () => {
+        return request(app)
+          .get("/api/articles/?order=down")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("bad request");
+          });
+      });
     });
   });
 });
