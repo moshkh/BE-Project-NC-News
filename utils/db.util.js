@@ -49,12 +49,12 @@ exports.checkTopicExists = (topic) => {
   if (topic) {
     return db
       .query(
-        `SELECT * FROM articles
-      WHERE topic = $1`,
+        `SELECT * FROM topics
+      WHERE slug = $1`,
         [topic]
       )
       .then(({ rows }) => {
-        console.log(rows);
+        //console.log(rows);
         if (rows.length === 0) {
           return Promise.reject({ status: 404, msg: "not found" });
         }

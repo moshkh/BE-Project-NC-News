@@ -67,17 +67,12 @@ describe("/api/articles", () => {
             });
           });
       });
-      test("GET: 200 - when no topic query provided responds with all articles", () => {
+      test("GET: 200 - querying an existing topic with no articles responds with an empty array", () => {
         return request(app)
-          .get("/api/articles/?topic")
+          .get("/api/articles/?topic=paper")
           .expect(200)
           .then(({ body: { articles } }) => {
-            expect(articles.length).toBe(testData.articleData.length);
-            articles.forEach((article) => {
-              expect(article).toMatchObject({
-                topic: expect.any(String),
-              });
-            });
+            expect(articles).toEqual([]);
           });
       });
       test("GET: 404 - querying a non-existing topic responds with msg 'not found'", () => {
