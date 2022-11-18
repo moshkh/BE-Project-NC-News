@@ -67,12 +67,27 @@ describe("/api/articles", () => {
             });
           });
       });
-      test.todo(
-        "GET: 200 - when no topic query provided responds with all articles"
-      );
-      test.todo(
-        "GET: 404 - querying a non-existing topic responds with msg 'not found'"
-      );
+      test("GET: 200 - when no topic query provided responds with all articles", () => {
+        return request(app)
+          .get("/api/articles/?topic")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles.length).toBe(testData.articleData.length);
+            articles.forEach((article) => {
+              expect(article).toMatchObject({
+                topic: expect.any(String),
+              });
+            });
+          });
+      });
+      test.skip("GET: 404 - querying a non-existing topic responds with msg 'not found'", () => {
+        return request(app)
+          .get("/api/articles/?topic=doesnotexist")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.msg).toBe("not found");
+          });
+      });
     });
     describe("?sort_by", () => {
       test.todo(
