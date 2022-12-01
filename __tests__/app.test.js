@@ -224,7 +224,7 @@ describe("/api/articles/:article_id", () => {
         expect(article.article_id).toBe(2);
       });
   });
-  test("GET: 200 - The response article to have the correct structure / properties", () => {
+  test.skip("GET: 200 - The response article to have the correct structure / properties", () => {
     return request(app)
       .get("/api/articles/3")
       .expect(200)
