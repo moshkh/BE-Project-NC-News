@@ -470,7 +470,7 @@ describe("/api/articles/:article_id/comments", () => {
   });
 });
 
-describe("GET /api/users", () => {
+describe("/api/users", () => {
   test("GET: 200 - responds with an array of user objects", () => {
     return request(app)
       .get("/api/users")
@@ -484,6 +484,38 @@ describe("GET /api/users", () => {
             avatar_url: expect.any(String),
           });
         });
+      });
+  });
+});
+
+describe("/api/comments/:comment_id", () => {
+  test("DELETE: 204 - comment with the comment_id provided in the URL is deleted and responds with no content", () => {
+    return request(app)
+      .delete("/api/comments/16")
+      .expect(204)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body).toMatchObject({});
+      })
+      .then(() => {
+        //comment 16 is for article 6 - article 6 only has one comment
+        //running a test after the delete to ensure article 6 has no comments
+        return request(app)
+          .get("/api/articles/6/comments")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            console.log(comments);
+            expect(Array.isArray(comments)).toBe(true);
+            expect(comments.length).toBe(0);
+          });
+      });
+  });
+  test("DELETE: 204 - if comment id does not exist it responds with an err msg: 'comment not found'", () => {
+    return request(app)
+      .delete("/api/comments/100")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("comment not found");
       });
   });
 });
