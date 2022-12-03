@@ -237,7 +237,6 @@ describe("/api/articles/:article_id", () => {
           topic: expect.any(String),
           created_at: expect.any(String),
           votes: expect.any(Number),
-          //should we be expecting this to be a number
           comment_count: expect.any(String),
         });
       });
