@@ -224,7 +224,7 @@ describe("/api/articles/:article_id", () => {
         expect(article.article_id).toBe(2);
       });
   });
-  test.skip("GET: 200 - The response article to have the correct structure / properties", () => {
+  test("GET: 200 - The response article to have the correct structure / properties", () => {
     return request(app)
       .get("/api/articles/3")
       .expect(200)
@@ -238,7 +238,7 @@ describe("/api/articles/:article_id", () => {
           created_at: expect.any(String),
           votes: expect.any(Number),
           //should we be expecting this to be a number
-          comment_count: expect.any(Number),
+          comment_count: expect.any(String),
         });
       });
   });
