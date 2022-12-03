@@ -2,6 +2,7 @@
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
+
   "GET /api/topics": {
     "description": "serves an array of all topics",
     "queries": [],
@@ -9,19 +10,162 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+
   "GET /api/articles": {
-    "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "description": "serves an array of all articles",
+    "queries": [
+      {
+        "sort_by": [
+          "author",
+          "title",
+          "article_id",
+          "topic",
+          "created_at",
+          "votes",
+          "comment_count"
+        ],
+        "default": "created_at"
+      },
+      { "order": ["ASC", "DESC"], "default": "DESC" }
+    ],
     "exampleResponse": {
       "articles": [
         {
+          "article_id": 1,
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
           "body": "Text from the article..",
-          "created_at": 1527695953341
+          "created_at": "2020-07-09T20:11:00.000Z",
+          "votes": 4,
+          "comment_count": "3"
+        },
+        {
+          "article_id": 2,
+          "title": "This is an article",
+          "topic": "hobbies",
+          "author": "user200",
+          "body": "Text from the article..",
+          "created_at": "2021-10-05T10:00:00.000Z",
+          "votes": 0,
+          "comment_count": "10"
         }
       ]
+    }
+  },
+
+  "GET /api/articles/:article_id": {
+    "description": "serves the article corresponding to the article_id",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "article_id": 5,
+          "title": "Article Title",
+          "topic": "Football",
+          "author": "user200",
+          "body": "Text from the article..",
+          "created_at": "2018-01-01T00:00:00.000Z",
+          "votes": 2,
+          "comment_count": "2"
+        }
+      ]
+    }
+  },
+
+  "PATCH /api/articles/:article_id": {
+    "description": "updates the vote for the article with specified article_id",
+    "queries": [],
+    "patchformat": [
+      {
+        "body": {
+          "inc_votes": 5
+        }
+      },
+      "inc_votes accepts negative value too"
+    ],
+    "exampleResponse": {
+      "article": [
+        {
+          "article_id": 3,
+          "title": "Article Title",
+          "topic": "Fiance",
+          "author": "tillybit",
+          "body": "Text from the article..",
+          "created_at": "2018-01-01T00:00:00.000Z",
+          "votes": 7,
+          "comment_count": "3"
+        }
+      ]
+    }
+  },
+
+  "GET /api/articles/:article_id/comment": {
+    "description": "serves an array of comments for a given article_id",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "comment_id": 1,
+          "votes": 0,
+          "created_at": "2018-01-01T00:00:00.000Z",
+          "author": "user2000",
+          "body": "This is the comment"
+        },
+        {
+          "comment_id": 2,
+          "votes": 0,
+          "created_at": "2020-05-01T11:15:00.000Z",
+          "author": "user201",
+          "body": "This is the comment"
+        }
+      ]
+    }
+  },
+
+  "GET /api/users": {
+    "description": "serves an array of users",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "username": "twinkletoes23",
+          "name": "Tanya Fletchman",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
+        },
+        {
+          "username": "joeyblogs2000",
+          "name": "Joe Bloggs",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+        }
+      ]
+    }
+  },
+
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds a comment to the article with specified article_id",
+    "queries": [],
+    "postformat": {
+      "body": {
+        "username": "butter_bridge",
+        "body": "test comment",
+        "article": 1
+      }
+    },
+    "exampleResponse": {
+      "comment_id": 22,
+      "body": "the comment added",
+      "article_id": 1,
+      "author": "butter_bridge",
+      "votes": 0,
+      "created_at": "2022-01-22T18:15:00.000Z"
+    }
+  },
+
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes comment with specified comment_id",
+    "exampleResponse": {
+      "body": {}
     }
   }
 }

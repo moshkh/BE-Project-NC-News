@@ -1,8 +1,6 @@
 const db = require("../db/connection");
 const {
   checkArticleExists,
-  currentVotesForArticle,
-  topicQuery,
   checkTopicExists,
 } = require("../utils/db.util");
 
