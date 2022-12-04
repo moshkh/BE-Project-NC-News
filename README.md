@@ -1,4 +1,4 @@
-# Northcoders News API - A Back-End Project Created By Me
+# Northcoders News API - A Back-End Project Created By moshkh
 
 ## Project Summary:
 
