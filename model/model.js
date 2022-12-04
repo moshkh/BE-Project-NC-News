@@ -1,10 +1,12 @@
+const { readFile } = require("node:fs/promises");
 const db = require("../db/connection");
-const {
-  checkArticleExists,
-  currentVotesForArticle,
-  topicQuery,
-  checkTopicExists,
-} = require("../utils/db.util");
+const { checkArticleExists, checkTopicExists } = require("../utils/db.util");
+
+exports.availableEndpoints = () => {
+  return readFile(`./endpoints.json`).then((fileContents) => {
+    return JSON.parse(fileContents);
+  });
+};
 
 exports.selectTopics = () => {
   return db

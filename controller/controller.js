@@ -7,7 +7,16 @@ const {
   insertVoteForArticle,
   selectUsers,
   deleteComment,
+  availableEndpoints,
 } = require("../model/model");
+
+exports.getEndpointJson = (req, res, next) => {
+  availableEndpoints()
+    .then((endpoints) => {
+      res.status(200).send({ endpoints });
+    })
+    .catch(next);
+};
 
 exports.getTopics = (req, res, next) => {
   selectTopics()

@@ -8,10 +8,12 @@ const {
   patchVoteToArticle,
   getUsers,
   deleteCommentById,
+  getEndpointJson,
 } = require("./controller/controller");
 const app = express();
 app.use(express.json());
 
+app.get("/api", getEndpointJson);
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
