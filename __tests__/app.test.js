@@ -14,12 +14,12 @@ afterAll(() => {
 });
 
 describe("/api", () => {
-  test.skip("GET: 200 - Responds with the endpoint.json file describing all available endpoints", () => {
+  test("GET: 200 - Responds with the endpoint.json file describing all available endpoints", () => {
     return request(app)
       .get("/api")
       .expect(200)
-      .then(({ body }) => {
-        expect(body).toEqual(endpointJson);
+      .then(({ body: { endpoints } }) => {
+        expect(endpoints).toEqual(endpointJson);
       });
   });
 });

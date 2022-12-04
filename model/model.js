@@ -3,8 +3,8 @@ const db = require("../db/connection");
 const { checkArticleExists, checkTopicExists } = require("../utils/db.util");
 
 exports.availableEndpoints = () => {
-  return readFile(`${__dirname}../endpoints.json`).then(() => {
-    console.log("then in model")
+  return readFile(`./endpoints.json`).then((fileContents) => {
+    return JSON.parse(fileContents);
   });
 };
 
