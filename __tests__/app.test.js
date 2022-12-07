@@ -398,7 +398,7 @@ describe("/api/articles/:article_id/comments", () => {
         });
       });
   });
-  test("POST: 201 - If post has any other properties apart from username or body responds, ignore extra properties and proceed with post", () => {
+  test("POST: 201 - If post has any other properties apart from username or body ignore extra properties and proceed with post", () => {
     const newComment = {
       username: "butter_bridge",
       body: "test comment",

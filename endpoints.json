@@ -142,8 +142,7 @@
     "postformat": {
       "body": {
         "username": "butter_bridge",
-        "body": "test comment",
-        "article": 1
+        "body": "test comment"
       }
     },
     "exampleResponse": {
