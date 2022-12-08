@@ -1,4 +1,4 @@
-const { readFile } = require("node:fs/promises");
+const { readFile } = require("fs").promises;
 const db = require("../db/connection");
 const { checkArticleExists, checkTopicExists } = require("../utils/db.util");
 
