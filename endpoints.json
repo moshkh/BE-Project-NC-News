@@ -11,8 +11,13 @@
   },
 
   "GET /api/articles": {
-    "description": "serves an array of all articles",
+    "description": "serves an array of articles",
     "queries": [
+      {
+        "topic": [
+          "<name of topic that exists> - view existing topics on /api/topics"
+        ]
+      },
       {
         "sort_by": [
           "author",
